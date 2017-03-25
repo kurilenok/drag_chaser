@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder> {
 
@@ -64,9 +67,9 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
     }
 
     private void removeQueen(String key) {
-        for (Queen v : queens) {
-            if (key.equals(v.getKey())) {
-                queens.remove(v);
+        for (Queen q : queens) {
+            if (key.equals(q.getKey())) {
+                queens.remove(q);
                 break;
             }
         }
@@ -94,11 +97,7 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
 
         int eventsCount = 0;
         Map<String, Boolean> events = queen.getQueenEvents();
-
-        if (events != null) {
-            eventsCount = events.size();
-        }
-
+        if (events != null) eventsCount = events.size();
         holder.tvQueenEvents.setText(Integer.toString(eventsCount));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
@@ -117,17 +116,22 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.queen_name)
+        TextView tvQueenName;
+
+        @BindView(R.id.queen_hometown)
+        TextView tvQueenHometown;
+
+        @BindView(R.id.queen_events)
+        TextView tvQueenEvents;
+
         public final View view;
-        public final TextView tvQueenName;
-        public final TextView tvQueenHometown;
-        public final TextView tvQueenEvents;
 
         public ViewHolder(View view) {
             super(view);
+            ButterKnife.bind(this, view);
             this.view = view;
-            tvQueenName = (TextView) view.findViewById(R.id.queen_name);
-            tvQueenHometown = (TextView) view.findViewById(R.id.queen_hometown);
-            tvQueenEvents = (TextView) view.findViewById(R.id.queen_events);
         }
     }
 }

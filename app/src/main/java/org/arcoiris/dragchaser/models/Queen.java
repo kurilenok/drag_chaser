@@ -18,6 +18,11 @@ public class Queen implements Comparable<Queen> {
     public Queen() {
     }
 
+    public Queen(String name, String hometown) {
+        this.name = name;
+        this.hometown = hometown;
+    }
+
     public String getKey() {
         return key;
     }
