@@ -14,7 +14,7 @@ import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.adapters.QueensAdapter;
 import org.arcoiris.dragchaser.models.Queen;
 
-public class QueensFragment extends Fragment {
+public class QueensListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -26,13 +26,13 @@ public class QueensFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public QueensFragment() {
+    public QueensListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static QueensFragment newInstance(int columnCount) {
-        QueensFragment fragment = new QueensFragment();
+    public static QueensListFragment newInstance(int columnCount) {
+        QueensListFragment fragment = new QueensListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);

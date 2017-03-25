@@ -67,8 +67,8 @@ public class NewQueenFragment extends Fragment {
                     public void onSuccess(Void aVoid) {
                         dialog.dismiss();
                         Utils.showSnackbar(getView(), "Please welcome " + name);
-                        etName.clearComposingText();
-                        etHometown.clearComposingText();
+                        etName.setText("");
+                        etHometown.setText("");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

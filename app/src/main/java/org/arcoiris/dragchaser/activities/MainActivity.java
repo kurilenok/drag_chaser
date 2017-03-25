@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.adapters.SectionsPagerAdapter;
-import org.arcoiris.dragchaser.fragments.QueensFragment;
+import org.arcoiris.dragchaser.fragments.QueensListFragment;
 import org.arcoiris.dragchaser.models.Queen;
 
 import butterknife.BindView;
@@ -31,7 +31,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        QueensFragment.OnQueensFragmentClickListener {
+        QueensListFragment.OnQueensFragmentClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -133,15 +133,25 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void OnQueensFragmentClick(Queen queen) {
-        Snackbar.make(viewPager, queen.getName(), Snackbar.LENGTH_LONG)
-                .setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "!!!!", Toast.LENGTH_LONG).show();
-                    }
-                }).show();
+//        Snackbar.make(viewPager, queen.getName(), Snackbar.LENGTH_LONG)
+//                .setAction("Undo", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Toast.makeText(MainActivity.this, "!!!!", Toast.LENGTH_LONG).show();
+//                    }
+//                }).show();
+
+        Intent intent = new Intent(this, QueenActivity.class);
+        intent.putExtra("key", queen.getKey());
+//        startActivity(intent);
+
+        startActivityForResult(intent, 1);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        viewPager.setCurrentItem(requestCode);
+    }
 
     public static class PlaceholderFragment extends Fragment {
         /**
@@ -180,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         switch (viewPager.getCurrentItem()) {
             case 1:
                 Intent intent = new Intent(MainActivity.this, NewQueenActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
                 break;
         }
     }

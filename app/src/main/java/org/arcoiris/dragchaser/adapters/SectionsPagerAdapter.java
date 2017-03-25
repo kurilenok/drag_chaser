@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import org.arcoiris.dragchaser.activities.MainActivity;
-import org.arcoiris.dragchaser.fragments.QueensFragment;
+import org.arcoiris.dragchaser.fragments.QueensListFragment;
 
 /**
  * Created by kukolka on 3/25/2017.
@@ -20,7 +20,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        if (position == 1) return new QueensFragment();
+        if (position == 1) return new QueensListFragment();
 
 
         return MainActivity.PlaceholderFragment.newInstance(position + 1);

@@ -13,7 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.arcoiris.dragchaser.R;
-import org.arcoiris.dragchaser.fragments.QueensFragment.OnQueensFragmentClickListener;
+import org.arcoiris.dragchaser.fragments.QueensListFragment.OnQueensFragmentClickListener;
 import org.arcoiris.dragchaser.models.Queen;
 
 import java.util.ArrayList;
@@ -76,9 +76,9 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
     }
 
     private void addQueen(DataSnapshot dataSnapshot) {
-        Queen venue = dataSnapshot.getValue(Queen.class);
-        venue.setKey(dataSnapshot.getKey());
-        queens.add(venue);
+        Queen queen = dataSnapshot.getValue(Queen.class);
+        queen.setKey(dataSnapshot.getKey());
+        queens.add(queen);
         Collections.sort(queens);
     }
 
