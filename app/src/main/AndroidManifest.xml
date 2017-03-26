@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.NewQueenActivity"
+            android:name=".activities.EditQueenActivity"
             android:label="@string/title_activity_new_queen"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

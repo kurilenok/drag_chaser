@@ -2,7 +2,6 @@ package org.arcoiris.dragchaser.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -18,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.adapters.SectionsPagerAdapter;
@@ -189,7 +187,7 @@ public class MainActivity extends AppCompatActivity
     public void onFabClick(View view) {
         switch (viewPager.getCurrentItem()) {
             case 1:
-                Intent intent = new Intent(MainActivity.this, NewQueenActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditQueenActivity.class);
                 startActivityForResult(intent, 1);
                 break;
         }

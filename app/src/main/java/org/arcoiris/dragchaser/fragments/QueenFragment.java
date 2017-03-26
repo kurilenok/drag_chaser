@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.arcoiris.dragchaser.R;
-import org.arcoiris.dragchaser.activities.QueenActivity;
 import org.arcoiris.dragchaser.models.Queen;
 
 import butterknife.BindView;
@@ -29,8 +28,7 @@ public class QueenFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_queen, container, false);
         ButterKnife.bind(this, view);
 
@@ -41,5 +39,4 @@ public class QueenFragment extends Fragment {
         tvName.setText(queen.getName());
         tvHometown.setText(queen.getHometown());
     }
-
 }

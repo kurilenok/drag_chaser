@@ -1,9 +1,9 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment"
-    android:name="org.arcoiris.dragchaser.fragments.NewQueenFragment"
+    android:id="@+id/fragment_new_queen"
+    android:name="org.arcoiris.dragchaser.fragments.EditQueenFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/fragment_new_queen" />
+    tools:layout="@layout/fragment_edit_queen" />
