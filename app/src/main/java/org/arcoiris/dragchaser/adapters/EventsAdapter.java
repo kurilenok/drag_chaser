@@ -13,8 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.arcoiris.dragchaser.R;
-import org.arcoiris.dragchaser.fragments.QueensListFragment.OnQueenClickListener;
-import org.arcoiris.dragchaser.models.Queen;
+import org.arcoiris.dragchaser.fragments.EventsListFragment;
+import org.arcoiris.dragchaser.models.Event;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,32 +25,33 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
-    private final List<Queen> queens = new ArrayList<>();
-    private final OnQueenClickListener queensClickListner;
+    private final List<Event> events = new ArrayList<>();
+    private final EventsListFragment.OnEventClickListener eventsClickListner;
 
-    public QueensAdapter(OnQueenClickListener listener) {
+
+    public EventsAdapter(EventsListFragment.OnEventClickListener listener) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference queensRef = db.getReference("queens");
+        DatabaseReference queensRef = db.getReference("events");
 
         queensRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                addQueen(dataSnapshot);
+                addEvent(dataSnapshot);
                 notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                removeQueen(dataSnapshot.getKey());
-                addQueen(dataSnapshot);
+                removeEvent(dataSnapshot.getKey());
+                addEvent(dataSnapshot);
                 notifyDataSetChanged();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                removeQueen(dataSnapshot.getKey());
+                removeEvent(dataSnapshot.getKey());
                 notifyDataSetChanged();
             }
 
@@ -63,48 +64,53 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
             }
         });
 
-        queensClickListner = listener;
+        eventsClickListner = listener;
     }
 
-    private void removeQueen(String key) {
-        for (Queen q : queens) {
-            if (key.equals(q.getKey())) {
-                queens.remove(q);
+    private void addEvent(DataSnapshot dataSnapshot) {
+        Event event = dataSnapshot.getValue(Event.class);
+        event.setKey(dataSnapshot.getKey());
+        events.add(event);
+        Collections.sort(events);
+    }
+
+    private void removeEvent(String key) {
+        for (Event e : events) {
+            if (key.equals(e.getKey())) {
+                events.remove(e);
                 break;
             }
         }
     }
 
-    private void addQueen(DataSnapshot dataSnapshot) {
-        Queen queen = dataSnapshot.getValue(Queen.class);
-        queen.setKey(dataSnapshot.getKey());
-        queens.add(queen);
-        Collections.sort(queens);
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_queen, parent, false);
+                .inflate(R.layout.item_event, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Queen queen = queens.get(position);
-        holder.tvQueenName.setText(queen.getName());
-        holder.tvQueenHometown.setText(queen.getHometown());
+        final Event event = events.get(position);
+        holder.tvDate.setText(event.getDate());
+        holder.tvTitle.setText(event.getTitle());
 
-        int eventsCount = 0;
-        Map<String, String> events = queen.getQueenEvents();
-        if (events != null) eventsCount = events.size();
-        holder.tvQueenEvents.setText(Integer.toString(eventsCount));
+        Map<String, String> eventQueens = event.getEventQueens();
+        if (eventQueens != null && !eventQueens.isEmpty()) {
+            String queens = "";
+            for (Map.Entry<String, String> entry : eventQueens.entrySet()) {
+                queens += entry.getValue() + ", ";
+            }
+            queens = queens.substring(0, queens.length() - 2);
+            holder.tvEventQueens.setText(queens);
+        }
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != queensClickListner) {
-                    queensClickListner.onQueenClick(queen);
+                if (null != eventsClickListner) {
+                    eventsClickListner.onEventClick(event);
                 }
             }
         });
@@ -112,19 +118,19 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return queens.size();
+        return events.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.queen_name)
-        TextView tvQueenName;
+        @BindView(R.id.tvDate)
+        TextView tvDate;
 
-        @BindView(R.id.queen_hometown)
-        TextView tvQueenHometown;
+        @BindView(R.id.tvTitle)
+        TextView tvTitle;
 
-        @BindView(R.id.queen_events)
-        TextView tvQueenEvents;
+        @BindView(R.id.tvEventQueens)
+        TextView tvEventQueens;
 
         public final View view;
 

@@ -13,7 +13,7 @@ public class Queen implements Comparable<Queen> {
     private String key;
     private String name;
     private String hometown;
-    private Map<String, Boolean> queenEvents;
+    private Map<String, String> queenEvents;
 
     public Queen() {
     }
@@ -47,11 +47,11 @@ public class Queen implements Comparable<Queen> {
         this.hometown = hometown;
     }
 
-    public Map<String, Boolean> getQueenEvents() {
+    public Map<String, String> getQueenEvents() {
         return queenEvents;
     }
 
-    public void setQueenEvents(Map<String, Boolean> queenEvents) {
+    public void setQueenEvents(Map<String, String> queenEvents) {
         this.queenEvents = queenEvents;
     }
 

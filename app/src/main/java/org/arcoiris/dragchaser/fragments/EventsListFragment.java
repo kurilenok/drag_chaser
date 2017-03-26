@@ -11,28 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.arcoiris.dragchaser.R;
-import org.arcoiris.dragchaser.adapters.QueensAdapter;
-import org.arcoiris.dragchaser.models.Queen;
+import org.arcoiris.dragchaser.adapters.EventsAdapter;
+import org.arcoiris.dragchaser.models.Event;
 
-public class QueensListFragment extends Fragment {
+
+public class EventsListFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
-    private OnQueenClickListener mListener;
+    private OnEventClickListener listener;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public QueensListFragment() {
+    public EventsListFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static QueensListFragment newInstance(int columnCount) {
-        QueensListFragment fragment = new QueensListFragment();
+    public static EventsListFragment newInstance(int columnCount) {
+        EventsListFragment fragment = new EventsListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -51,7 +48,7 @@ public class QueensListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_queen_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -62,7 +59,7 @@ public class QueensListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new QueensAdapter(mListener));
+            recyclerView.setAdapter(new EventsAdapter(listener));
         }
         return view;
     }
@@ -71,21 +68,21 @@ public class QueensListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnQueenClickListener) {
-            mListener = (OnQueenClickListener) context;
+        if (context instanceof OnEventClickListener) {
+            listener = (OnEventClickListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnEventsFragmentClickListener");
+                    + " must implement OnEventClickListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
-    public interface OnQueenClickListener {
-        void onQueenClick(Queen queen);
+    public interface OnEventClickListener {
+        void onEventClick(Event event);
     }
 }

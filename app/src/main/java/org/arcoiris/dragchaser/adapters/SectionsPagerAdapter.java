@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import org.arcoiris.dragchaser.activities.MainActivity;
+import org.arcoiris.dragchaser.fragments.EventsListFragment;
 import org.arcoiris.dragchaser.fragments.QueensListFragment;
 
 /**
@@ -19,16 +20,17 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
-        if (position == 1) return new QueensListFragment();
-
-
+        switch (position) {
+            case 0:
+                return EventsListFragment.newInstance(1);
+            case 1:
+                return QueensListFragment.newInstance(1);
+        }
         return MainActivity.PlaceholderFragment.newInstance(position + 1);
     }
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
         return 3;
     }
 

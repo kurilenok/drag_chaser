@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.adapters.SectionsPagerAdapter;
+import org.arcoiris.dragchaser.fragments.EventsListFragment;
 import org.arcoiris.dragchaser.fragments.QueensListFragment;
+import org.arcoiris.dragchaser.models.Event;
 import org.arcoiris.dragchaser.models.Queen;
 
 import butterknife.BindView;
@@ -29,7 +31,9 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        QueensListFragment.OnQueensFragmentClickListener {
+        QueensListFragment.OnQueenClickListener,
+        EventsListFragment.OnEventClickListener
+        {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -130,7 +134,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnQueensFragmentClick(Queen queen) {
+    public void onQueenClick(Queen queen) {
 //        Snackbar.make(viewPager, queen.getName(), Snackbar.LENGTH_LONG)
 //                .setAction("Undo", new View.OnClickListener() {
 //                    @Override
@@ -151,7 +155,12 @@ public class MainActivity extends AppCompatActivity
         viewPager.setCurrentItem(requestCode);
     }
 
-    public static class PlaceholderFragment extends Fragment {
+            @Override
+            public void onEventClick(Event event) {
+
+            }
+
+            public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
