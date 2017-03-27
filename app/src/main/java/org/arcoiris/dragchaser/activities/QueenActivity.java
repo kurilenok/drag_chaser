@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.fragments.QueenFragment;
+import org.arcoiris.dragchaser.models.Event;
 import org.arcoiris.dragchaser.models.Queen;
 import org.arcoiris.dragchaser.utils.Utils;
 
@@ -25,7 +26,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class QueenActivity extends AppCompatActivity {
+public class QueenActivity extends AppCompatActivity
+        implements QueenFragment.OnQueenEventClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -34,6 +36,7 @@ public class QueenActivity extends AppCompatActivity {
     private String key;
     private String name;
     private ProgressDialog dialog;
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,28 +55,35 @@ public class QueenActivity extends AppCompatActivity {
     }
 
     private void getQueenByKey(final String key) {
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference reference = db.getReference("queens").child(key);
+        DatabaseReference queensRef = db.getReference("queens").child(key);
+        queensRef.addValueEventListener(new QueenValueEventListner());
+    }
 
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                queen = dataSnapshot.getValue(Queen.class);
-                if (queen == null) return;
+    @Override
+    public void onQueenEventClick(Event event) {
+        Utils.snack(toolbar, event.getKey());
+    }
 
-                queen.setKey(key);
-                name = queen.getName();
+    private class QueenValueEventListner implements ValueEventListener {
 
-                getSupportActionBar().setTitle(queen.getName());
-                QueenFragment queenFragment = (QueenFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_queen);
-                queenFragment.fillData(queen);
-            }
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            queen = dataSnapshot.getValue(Queen.class);
+            if (queen == null) return;
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+            queen.setKey(key);
+            name = queen.getName();
+
+            getSupportActionBar().setTitle(queen.getName());
+            QueenFragment queenFragment = (QueenFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment_queen);
+            queenFragment.fillQueenData(queen);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
     }
 
     private void setupToolbar() {
@@ -100,7 +110,6 @@ public class QueenActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             dialog.show();
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
             DatabaseReference ref = db.getReference("queens");
             ref.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListner());
         }
@@ -124,5 +133,4 @@ public class QueenActivity extends AppCompatActivity {
         }
         return true;
     }
-
 }
