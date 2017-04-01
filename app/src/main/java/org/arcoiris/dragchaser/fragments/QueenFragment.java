@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.arcoiris.dragchaser.R;
+import org.arcoiris.dragchaser.activities.QueenActivity;
 import org.arcoiris.dragchaser.adapters.QueenEventsAdapter;
 import org.arcoiris.dragchaser.models.Event;
 import org.arcoiris.dragchaser.models.Queen;
@@ -45,13 +46,15 @@ public class QueenFragment extends Fragment {
     }
 
     public void fillQueenData(Queen queen) {
+        ((QueenActivity) getActivity()).getSupportActionBar().setTitle(queen.getName());
+
         tvName.setText(queen.getName());
         tvHometown.setText(queen.getHometown());
 
         Map<String, String> events = queen.getQueenEvents();
 
-        QueenEventsAdapter queenEventsAdapter = new QueenEventsAdapter(events, listener);
-        rvQueenEvents.setAdapter(queenEventsAdapter);
+        QueenEventsAdapter adapter = new QueenEventsAdapter(events, listener);
+        rvQueenEvents.setAdapter(adapter);
 
     }
 
@@ -61,8 +64,7 @@ public class QueenFragment extends Fragment {
         if (context instanceof OnQueenEventClickListener) {
             listener = (OnQueenEventClickListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnEventsFragmentClickListener");
+            throw new RuntimeException(context.toString() + " is OnQueenEventClickListener?");
         }
     }
 
@@ -75,5 +77,4 @@ public class QueenFragment extends Fragment {
     public interface OnQueenEventClickListener {
         void onQueenEventClick(Event event);
     }
-
 }

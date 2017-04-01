@@ -71,8 +71,7 @@ public class EventsListFragment extends Fragment {
         if (context instanceof OnEventClickListener) {
             listener = (OnEventClickListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnEventClickListener");
+            throw new RuntimeException(context.toString() + " is OnEventClickListener?");
         }
     }
 

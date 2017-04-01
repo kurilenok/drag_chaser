@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import org.arcoiris.dragchaser.activities.MainActivity;
 import org.arcoiris.dragchaser.fragments.EventsListFragment;
 import org.arcoiris.dragchaser.fragments.QueensListFragment;
 
@@ -25,8 +24,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return EventsListFragment.newInstance(1);
             case 1:
                 return QueensListFragment.newInstance(1);
+            case 2:
+                return QueensListFragment.newInstance(1);
         }
-        return MainActivity.PlaceholderFragment.newInstance(position + 1);
+        return EventsListFragment.newInstance(1);
     }
 
     @Override

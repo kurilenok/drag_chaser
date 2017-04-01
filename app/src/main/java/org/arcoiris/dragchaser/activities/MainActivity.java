@@ -32,8 +32,7 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         QueensListFragment.OnQueenClickListener,
-        EventsListFragment.OnEventClickListener
-        {
+        EventsListFragment.OnEventClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -135,61 +134,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onQueenClick(Queen queen) {
-//        Snackbar.make(viewPager, queen.getName(), Snackbar.LENGTH_LONG)
-//                .setAction("Undo", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Toast.makeText(MainActivity.this, "!!!!", Toast.LENGTH_LONG).show();
-//                    }
-//                }).show();
-
         Intent intent = new Intent(this, QueenActivity.class);
         intent.putExtra("key", queen.getKey());
-//        startActivity(intent);
-
         startActivityForResult(intent, 1);
+    }
+
+    @Override
+    public void onEventClick(Event event) {
+        Intent intent = new Intent(this, EventActivity.class);
+        intent.putExtra("key", event.getKey());
+        startActivityForResult(intent, 0);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         viewPager.setCurrentItem(requestCode);
-    }
-
-            @Override
-            public void onEventClick(Event event) {
-
-            }
-
-            public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_tab, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
     }
 
     @OnClick(R.id.fab)
@@ -201,5 +160,4 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
     }
-
 }

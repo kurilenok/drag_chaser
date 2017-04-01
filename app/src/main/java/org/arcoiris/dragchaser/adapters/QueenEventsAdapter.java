@@ -9,11 +9,9 @@ import android.widget.TextView;
 import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.fragments.QueenFragment;
 import org.arcoiris.dragchaser.models.Event;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +63,7 @@ public class QueenEventsAdapter extends RecyclerView.Adapter<QueenEventsAdapter.
         return events.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.tvDate)
         TextView tvDate;

@@ -73,8 +73,7 @@ public class QueensListFragment extends Fragment {
         if (context instanceof OnQueenClickListener) {
             listener = (OnQueenClickListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnEventsFragmentClickListener");
+            throw new RuntimeException(context.toString() + " is OnQueenClickListener?");
         }
     }
 

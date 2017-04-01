@@ -59,11 +59,6 @@ public class QueenActivity extends AppCompatActivity
         queensRef.addValueEventListener(new QueenValueEventListner());
     }
 
-    @Override
-    public void onQueenEventClick(Event event) {
-        Utils.snack(toolbar, event.getKey());
-    }
-
     private class QueenValueEventListner implements ValueEventListener {
 
         @Override
@@ -74,10 +69,9 @@ public class QueenActivity extends AppCompatActivity
             queen.setKey(key);
             name = queen.getName();
 
-            getSupportActionBar().setTitle(queen.getName());
-            QueenFragment queenFragment = (QueenFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.fragment_queen);
-            queenFragment.fillQueenData(queen);
+            QueenFragment fragment = (QueenFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragment_queen);
+            fragment.fillQueenData(queen);
         }
 
         @Override
@@ -90,6 +84,14 @@ public class QueenActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Queen Name");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    @Override
+    public void onQueenEventClick(Event event) {
+        Intent intent = new Intent(this, EventActivity.class);
+        intent.putExtra("key", event.getKey());
+        startActivity(intent);
     }
 
     @OnClick(R.id.fabEdit)
