@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +19,7 @@ import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.fragments.EventFragment;
 import org.arcoiris.dragchaser.models.Event;
 import org.arcoiris.dragchaser.models.Queen;
+import org.arcoiris.dragchaser.utils.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,18 +58,11 @@ public class EventActivity extends AppCompatActivity
         eventsRef.addValueEventListener(new EventValueEventListner());
     }
 
-    @OnClick(R.id.fabEdit)
-    public void onFabClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
-
     private void setupToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Event Title");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
 
     private class EventValueEventListner implements ValueEventListener {
         @Override
@@ -89,11 +84,43 @@ public class EventActivity extends AppCompatActivity
         }
     }
 
-
     @Override
     public void onEventQueenClick(Queen queen) {
         Intent intent = new Intent(this, QueenActivity.class);
         intent.putExtra("key", queen.getKey());
         startActivity(intent);
     }
+
+    @OnClick(R.id.fabEdit)
+    public void onFabClick(View view) {
+        Intent intent = new Intent(this, EditEventActivity.class);
+        intent.putExtra("key", event.getKey());
+        startActivity(intent);
+
+    }
+
+    @OnClick(R.id.fabDelete)
+    public void onFabDelete(View view) {
+        Snackbar.make(view, "Delete " + title + "?", Snackbar.LENGTH_LONG)
+                .setAction("yeap!", new onActionListner()).show();
+    }
+
+    private class onActionListner implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            dialog.show();
+            DatabaseReference ref = db.getReference("events");
+            ref.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListener());
+        }
+    }
+
+    private class RemoveSuccessListener implements OnSuccessListener<Void> {
+        @Override
+        public void onSuccess(Void aVoid) {
+            dialog.dismiss();
+            Utils.toast(EventActivity.this, title + " was removed");
+            finish();
+        }
+    }
+
 }

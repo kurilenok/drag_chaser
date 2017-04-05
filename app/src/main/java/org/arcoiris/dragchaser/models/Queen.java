@@ -18,9 +18,8 @@ public class Queen implements Comparable<Queen> {
     public Queen() {
     }
 
-    public Queen(String name, String hometown) {
+    public Queen(String name) {
         this.name = name;
-        this.hometown = hometown;
     }
 
     public String getKey() {
@@ -58,6 +57,18 @@ public class Queen implements Comparable<Queen> {
     @Override
     public int compareTo(@NonNull Queen queen) {
         return this.getName().compareTo(queen.getName());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Queen) {
+            Queen another = (Queen) object;
+            if (another.name.equalsIgnoreCase(this.name) &&
+                    another.key.equals(this.key)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

@@ -2,21 +2,17 @@ package org.arcoiris.dragchaser.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.View;
 
 import org.arcoiris.dragchaser.R;
 import org.arcoiris.dragchaser.adapters.SectionsPagerAdapter;
@@ -154,10 +150,15 @@ public class MainActivity extends AppCompatActivity
     @OnClick(R.id.fab)
     public void onFabClick(View view) {
         switch (viewPager.getCurrentItem()) {
-            case 1:
-                Intent intent = new Intent(MainActivity.this, EditQueenActivity.class);
-                startActivityForResult(intent, 1);
+            case 0:
+                Intent intent0 = new Intent(MainActivity.this, EditEventActivity.class);
+                startActivityForResult(intent0, 0);
                 break;
+            case 1:
+                Intent intent1 = new Intent(MainActivity.this, EditQueenActivity.class);
+                startActivityForResult(intent1, 1);
+                break;
+
         }
     }
 }

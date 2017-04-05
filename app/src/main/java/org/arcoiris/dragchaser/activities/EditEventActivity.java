@@ -13,61 +13,60 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.arcoiris.dragchaser.R;
-import org.arcoiris.dragchaser.fragments.EditQueenFragment;
-import org.arcoiris.dragchaser.models.Queen;
+import org.arcoiris.dragchaser.fragments.EditEventFragment;
+import org.arcoiris.dragchaser.models.Event;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-public class EditQueenActivity extends AppCompatActivity {
+public class EditEventActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private Queen queen;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_queen);
+        setContentView(R.layout.activity_edit_event);
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
         String key = intent.getStringExtra("key");
         if (key != null && !key.isEmpty()) {
-            getQueenByKeyIfAny(key);
+            getEventByKeyIfAny(key);
         }
 
         setupToolbar();
     }
 
-    private void setupToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Add new Queen");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void getQueenByKeyIfAny(final String key) {
+    private void getEventByKeyIfAny(final String key) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("queens").child(key);
+        DatabaseReference reference = database.getReference("events").child(key);
         if (reference == null) return;
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                queen = dataSnapshot.getValue(Queen.class);
-                queen.setKey(key);
-                getSupportActionBar().setTitle("Edit: " + queen.getName());
-                EditQueenFragment fragment = (EditQueenFragment) getSupportFragmentManager()
-                        .findFragmentById(R.id.fragment_edit_queen);
-                fragment.propagateQueen(queen);
+                event = dataSnapshot.getValue(Event.class);
+                event.setKey(key);
+                getSupportActionBar().setTitle("Edit: " + event.getTitle());
+                EditEventFragment fragment = (EditEventFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_edit_event);
+                fragment.propagateEvent(event);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Add new Event");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -79,4 +78,5 @@ public class EditQueenActivity extends AppCompatActivity {
         }
         return true;
     }
+
 }

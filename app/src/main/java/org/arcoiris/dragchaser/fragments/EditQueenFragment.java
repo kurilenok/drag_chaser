@@ -58,17 +58,18 @@ public class EditQueenFragment extends Fragment {
         dialog.show();
 
         name = etName.getText().toString().trim();
-        String hometown = etHometown.getText().toString().trim();
 
-        Queen queen = new Queen(name, hometown);
+        Queen queen = new Queen();
+        queen.setName(name);
+        queen.setHometown(etHometown.getText().toString().trim());
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference("queens");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("queens");
 
         if (key == null || key.isEmpty()) {
-            ref.push().setValue(queen).addOnSuccessListener(new UpdateSuccessListner());
+            reference.push().setValue(queen).addOnSuccessListener(new UpdateSuccessListner());
         } else {
-            ref.child(key).setValue(queen).addOnSuccessListener(new UpdateSuccessListner());
+            reference.child(key).setValue(queen).addOnSuccessListener(new UpdateSuccessListner());
         }
     }
 

@@ -113,11 +113,11 @@ public class QueenActivity extends AppCompatActivity
         public void onClick(View view) {
             dialog.show();
             DatabaseReference ref = db.getReference("queens");
-            ref.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListner());
+            ref.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListener());
         }
     }
 
-    private class RemoveSuccessListner implements OnSuccessListener<Void> {
+    private class RemoveSuccessListener implements OnSuccessListener<Void> {
         @Override
         public void onSuccess(Void aVoid) {
             dialog.dismiss();
