@@ -35,7 +35,7 @@ public class EventQueensAdapter extends RecyclerView.Adapter<EventQueensAdapter.
                 queen.setName(entry.getValue());
                 queens.add(queen);
             }
-            Collections.sort(queens);
+//            Collections.sort(queens);
         }
         this.listener = listener;
     }

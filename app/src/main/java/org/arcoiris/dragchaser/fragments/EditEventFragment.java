@@ -62,8 +62,9 @@ public class EditEventFragment extends Fragment {
     private Event event;
 
     private List<String> queenNames = new ArrayList<>();
+    private ArrayAdapter<String> queenNameAdapter;
     private Map<String, String> eventQueens = new HashMap<>();
-    private ArrayAdapter<String> nameAdapter;
+    private Map<String, String> queenDirectory = new HashMap<>();
 
     public EditEventFragment() {
     }
@@ -73,13 +74,13 @@ public class EditEventFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
         ButterKnife.bind(this, view);
 
-        initSpinnerAdapter(event);
+        initQueenNameAdapter();
 
 
         return view;
     }
 
-    private void initSpinnerAdapter(final Event event) {
+    private void initQueenNameAdapter() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("queenNames");
 
@@ -87,16 +88,18 @@ public class EditEventFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String name = snapshot.getValue(String.class);
-                    queenNames.add(name);
+                    queenDirectory.put(snapshot.getKey(), snapshot.getValue(String.class));
+
+//                    String name = snapshot.getValue(String.class);
+//                    queenNames.add(name);
                 }
 
-                nameAdapter = new ArrayAdapter<>(
+                queenNames.addAll(queenDirectory.values());
+
+                queenNameAdapter = new ArrayAdapter<>(
                         getContext(), android.R.layout.simple_list_item_1, queenNames);
-
-                etQueens.setAdapter(nameAdapter);
+                etQueens.setAdapter(queenNameAdapter);
                 etQueens.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-
             }
 
             @Override
@@ -106,7 +109,6 @@ public class EditEventFragment extends Fragment {
         });
     }
 
-
     @OnClick(R.id.bSubmit)
     public void onSubmitClick() {
         Event event = new Event();
@@ -114,6 +116,13 @@ public class EditEventFragment extends Fragment {
         event.setTitle(etTitle.getText().toString().trim());
         event.setVenue(etVenue.getText().toString().trim());
 
+        String eventQueenNames = etQueens.getText().toString().trim();
+        String[] names = eventQueenNames.split(",");
+        for (String name : names) {
+            String value = name.trim();
+            String key = Utils.getKeyByValue(value, queenDirectory);
+            eventQueens.put(key, value);
+        }
         event.setEventQueens(eventQueens);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -143,7 +152,6 @@ public class EditEventFragment extends Fragment {
         }
         if (eventQueenNames.length() > 0) {
             etQueens.setText(eventQueenNames.toString());
-//            etQueens.setText(eventQueenNames.toString().substring(0, eventQueenNames.length() - 2));
         }
     }
 
@@ -215,5 +223,4 @@ public class EditEventFragment extends Fragment {
 
         timeDialog.show();
     }
-
 }
