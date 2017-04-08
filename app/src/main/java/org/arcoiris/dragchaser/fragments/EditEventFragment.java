@@ -1,16 +1,23 @@
 package org.arcoiris.dragchaser.fragments;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +33,7 @@ import org.arcoiris.dragchaser.models.Queen;
 import org.arcoiris.dragchaser.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -41,11 +49,14 @@ public class EditEventFragment extends Fragment {
     @BindView(R.id.etDate)
     EditText etDate;
 
+    @BindView(R.id.etTime)
+    EditText etTime;
+
     @BindView(R.id.etTitle)
     EditText etTitle;
 
     @BindView(R.id.etVenue)
-    EditText etVenue;
+    MultiAutoCompleteTextView etVenue;
 
     @BindView(R.id.bSubmit)
     Button bSubmit;
@@ -79,7 +90,6 @@ public class EditEventFragment extends Fragment {
     private Queen emptyQueen = new Queen(">> CHANGE");
     private Map<String, String> eventQueens = new HashMap<>();
 
-
     private QueensSpinnerAdapter adapter;
 
     public EditEventFragment() {
@@ -91,6 +101,11 @@ public class EditEventFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         initSpinnerAdapter(event);
+
+        String[] countries = getResources().getStringArray(R.array.list_of_countries);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, countries);
+        etVenue.setAdapter(adapter);
+        etVenue.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         return view;
     }
@@ -110,7 +125,6 @@ public class EditEventFragment extends Fragment {
                 }
                 queens.add(emptyQueen);
                 Collections.sort(queens);
-
 
 
                 adapter = new QueensSpinnerAdapter(getContext(), R.layout.item_spinner_queen, queens);
@@ -218,9 +232,81 @@ public class EditEventFragment extends Fragment {
     }
 
     @OnClick(R.id.bReset1)
-    public void onResetClick() {
-        tvQueen1.setText("Queen 1:");
+    public void onReset1Click() {
+        tvQueen1.setText("Queen 1: ");
         spinner1.setSelection(0);
+    }
+
+    @OnClick(R.id.bReset2)
+    public void onReset2Click() {
+        tvQueen2.setText("Queen 2: ");
+        spinner2.setSelection(0);
+    }
+
+    @OnClick(R.id.bReset3)
+    public void onReset3Click() {
+        tvQueen3.setText("Queen 3: ");
+        spinner3.setSelection(0);
+    }
+
+    @OnClick({R.id.bDate, R.id.etDate})
+    public void selectDate() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog dateDialog = new DatePickerDialog(
+                getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year1, int month1, int day1) {
+                        String year = String.valueOf(year1);
+                        String month = String.valueOf(month1 + 1);
+                        String day = String.valueOf(day1);
+                        etDate.setText(month + "/" + day + "/" + year);
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        dateDialog.show();
+    }
+
+    @OnClick({R.id.bTime, R.id.etTime})
+    public void selectTime() {
+        TimePickerDialog timeDialog = new TimePickerDialog(
+                getContext(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        int hour = selectedHour;
+                        int minutes = selectedMinute;
+                        String timeSet = "";
+                        if (hour > 12) {
+                            hour -= 12;
+                            timeSet = "PM";
+                        } else if (hour == 0) {
+                            hour += 12;
+                            timeSet = "AM";
+                        } else if (hour == 12) {
+                            timeSet = "PM";
+                        } else {
+                            timeSet = "AM";
+                        }
+
+                        String min = "";
+                        if (minutes < 10)
+                            min = "0" + minutes;
+                        else
+                            min = String.valueOf(minutes);
+
+                        String aTime = new StringBuilder().append(hour).append(':')
+                                .append(min).append(" ").append(timeSet).toString();
+
+                        etTime.setText(aTime);
+                    }
+                },
+                21, 0, false);
+
+        timeDialog.show();
     }
 
 }
