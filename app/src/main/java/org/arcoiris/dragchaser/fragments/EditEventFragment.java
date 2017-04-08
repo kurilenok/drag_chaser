@@ -7,15 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -27,14 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.arcoiris.dragchaser.R;
-import org.arcoiris.dragchaser.adapters.QueensSpinnerAdapter;
 import org.arcoiris.dragchaser.models.Event;
-import org.arcoiris.dragchaser.models.Queen;
 import org.arcoiris.dragchaser.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +40,16 @@ import butterknife.OnClick;
 public class EditEventFragment extends Fragment {
 
     @BindView(R.id.etDate)
-    EditText etDate;
+    TextView etDate;
 
     @BindView(R.id.etTime)
-    EditText etTime;
+    TextView etTime;
 
     @BindView(R.id.etTitle)
     EditText etTitle;
+
+    @BindView(R.id.etQueens)
+    MultiAutoCompleteTextView etQueens;
 
     @BindView(R.id.etVenue)
     MultiAutoCompleteTextView etVenue;
@@ -61,36 +57,13 @@ public class EditEventFragment extends Fragment {
     @BindView(R.id.bSubmit)
     Button bSubmit;
 
-    @BindView(R.id.sQueen1)
-    Spinner spinner1;
-
-    @BindView(R.id.sQueen2)
-    Spinner spinner2;
-
-    @BindView(R.id.sQueen3)
-    Spinner spinner3;
-
-    @BindView(R.id.tvQueen1)
-    TextView tvQueen1;
-
-    @BindView(R.id.tvQueen2)
-    TextView tvQueen2;
-
-    @BindView(R.id.tvQueen3)
-    TextView tvQueen3;
-
-    @BindView(R.id.bReset1)
-    ImageButton bReset1;
-
     private String key;
     private String title;
     private Event event;
 
-    final List<Queen> queens = new ArrayList<>();
-    private Queen emptyQueen = new Queen(">> CHANGE");
+    private List<String> queenNames = new ArrayList<>();
     private Map<String, String> eventQueens = new HashMap<>();
-
-    private QueensSpinnerAdapter adapter;
+    private ArrayAdapter<String> nameAdapter;
 
     public EditEventFragment() {
     }
@@ -102,10 +75,6 @@ public class EditEventFragment extends Fragment {
 
         initSpinnerAdapter(event);
 
-        String[] countries = getResources().getStringArray(R.array.list_of_countries);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, countries);
-        etVenue.setAdapter(adapter);
-        etVenue.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         return view;
     }
@@ -119,23 +88,14 @@ public class EditEventFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.getValue(String.class);
-                    Queen queen = new Queen(name);
-                    queen.setKey(snapshot.getKey());
-                    queens.add(queen);
+                    queenNames.add(name);
                 }
-                queens.add(emptyQueen);
-                Collections.sort(queens);
 
+                nameAdapter = new ArrayAdapter<>(
+                        getContext(), android.R.layout.simple_list_item_1, queenNames);
 
-                adapter = new QueensSpinnerAdapter(getContext(), R.layout.item_spinner_queen, queens);
-
-                spinner1.setAdapter(adapter);
-                spinner2.setAdapter(adapter);
-                spinner3.setAdapter(adapter);
-
-                spinner1.setOnItemSelectedListener(new OnSpinnerChange(tvQueen1, 1));
-                spinner2.setOnItemSelectedListener(new OnSpinnerChange(tvQueen2, 2));
-                spinner3.setOnItemSelectedListener(new OnSpinnerChange(tvQueen3, 3));
+                etQueens.setAdapter(nameAdapter);
+                etQueens.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
             }
 
@@ -146,27 +106,6 @@ public class EditEventFragment extends Fragment {
         });
     }
 
-    private class OnSpinnerChange implements AdapterView.OnItemSelectedListener {
-
-        private TextView tvQueen;
-        private int number;
-
-        public OnSpinnerChange(TextView tvQueen, int number) {
-            this.tvQueen = tvQueen;
-            this.number = number;
-        }
-
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (i > 0)
-                tvQueen.setText("Queen " + number + ": " + queens.get(i).getName());
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-        }
-    }
-
 
     @OnClick(R.id.bSubmit)
     public void onSubmitClick() {
@@ -174,21 +113,6 @@ public class EditEventFragment extends Fragment {
         event.setDate(etDate.getText().toString().trim());
         event.setTitle(etTitle.getText().toString().trim());
         event.setVenue(etVenue.getText().toString().trim());
-
-        if (spinner3.getSelectedItemPosition() > 0) {
-            Queen queen3 = (Queen) spinner3.getSelectedItem();
-            eventQueens.put(queen3.getKey(), queen3.getName());
-        }
-
-        if (spinner2.getSelectedItemPosition() > 0) {
-            Queen queen2 = (Queen) spinner2.getSelectedItem();
-            eventQueens.put(queen2.getKey(), queen2.getName());
-        }
-
-        if (spinner1.getSelectedItemPosition() > 0) {
-            Queen queen1 = (Queen) spinner1.getSelectedItem();
-            eventQueens.put(queen1.getKey(), queen1.getName());
-        }
 
         event.setEventQueens(eventQueens);
 
@@ -213,12 +137,13 @@ public class EditEventFragment extends Fragment {
         bSubmit.setText("Update");
 
         Map<String, String> queens = event.getEventQueens();
-        TextView[] textViews = {tvQueen1, tvQueen2, tvQueen3};
-
-        int i = 0;
-
+        StringBuilder eventQueenNames = new StringBuilder();
         for (Map.Entry<String, String> entry : queens.entrySet()) {
-            textViews[i].setText("Queen " + ++i + ": " + entry.getValue());
+            eventQueenNames.append(entry.getValue()).append(", ");
+        }
+        if (eventQueenNames.length() > 0) {
+            etQueens.setText(eventQueenNames.toString());
+//            etQueens.setText(eventQueenNames.toString().substring(0, eventQueenNames.length() - 2));
         }
     }
 
@@ -229,24 +154,6 @@ public class EditEventFragment extends Fragment {
             Utils.toast(getContext(), "New event added");
             getActivity().finish();
         }
-    }
-
-    @OnClick(R.id.bReset1)
-    public void onReset1Click() {
-        tvQueen1.setText("Queen 1: ");
-        spinner1.setSelection(0);
-    }
-
-    @OnClick(R.id.bReset2)
-    public void onReset2Click() {
-        tvQueen2.setText("Queen 2: ");
-        spinner2.setSelection(0);
-    }
-
-    @OnClick(R.id.bReset3)
-    public void onReset3Click() {
-        tvQueen3.setText("Queen 3: ");
-        spinner3.setSelection(0);
     }
 
     @OnClick({R.id.bDate, R.id.etDate})
