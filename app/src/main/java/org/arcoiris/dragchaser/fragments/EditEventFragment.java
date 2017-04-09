@@ -59,7 +59,7 @@ public class EditEventFragment extends Fragment {
 
     private String key;
     private String title;
-    private Event event;
+    private FirebaseDatabase database;
 
     private List<String> queenNames = new ArrayList<>();
     private ArrayAdapter<String> queenNameAdapter;
@@ -74,16 +74,15 @@ public class EditEventFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_event, container, false);
         ButterKnife.bind(this, view);
 
-        initQueenNameAdapter();
+        database = FirebaseDatabase.getInstance();
 
+        initQueenNameAdapter();
 
         return view;
     }
 
     private void initQueenNameAdapter() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("queenNames");
-
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -120,32 +119,44 @@ public class EditEventFragment extends Fragment {
         String[] names = eventQueenNames.split(",");
         for (String name : names) {
             String value = name.trim();
-            String key = Utils.getKeyByValue(value, queenDirectory);
-            eventQueens.put(key, value);
+            String queenKey = Utils.getKeyByValue(value, queenDirectory);
+            if (queenKey != null)
+                eventQueens.put(queenKey, value);
         }
         event.setEventQueens(eventQueens);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("events");
+        DatabaseReference refEvents = database.getReference("events");
 
         if (key == null || key.isEmpty()) {
-            reference.push().setValue(event).addOnSuccessListener(new UpdateSuccessListner());
+            DatabaseReference refNewEvent = refEvents.push();
+            refNewEvent.setValue(event).addOnSuccessListener(new UpdateSuccessListner());
+            propagateEventToQueens(event, refNewEvent.getKey());
         } else {
-            reference.child(key).setValue(event).addOnSuccessListener(new UpdateSuccessListner());
+            refEvents.child(key).setValue(event).addOnSuccessListener(new UpdateSuccessListner());
+            propagateEventToQueens(event, key);
         }
     }
 
-    public void propagateEvent(Event event) {
-        this.event = event;
-        key = event.getKey();
-        title = event.getTitle();
+    private void propagateEventToQueens(Event event, String eventKey) {
+        DatabaseReference refQueens = database.getReference("queens");
+        for (String queenKey : event.getEventQueens().keySet()) {
+            refQueens.child(queenKey)
+                    .child("queenEvents")
+                    .child(eventKey)
+                    .setValue(event.toString());
+        }
+    }
 
-        etDate.setText(event.getDate());
-        etTitle.setText(event.getTitle());
-        etVenue.setText(event.getVenue());
+    public void updateViewForExistingEvent(Event existingEvent) {
+        key = existingEvent.getKey();
+        title = existingEvent.getTitle();
+
+        etDate.setText(existingEvent.getDate());
+        etTitle.setText(existingEvent.getTitle());
+        etVenue.setText(existingEvent.getVenue());
         bSubmit.setText("Update");
 
-        Map<String, String> queens = event.getEventQueens();
+        Map<String, String> queens = existingEvent.getEventQueens();
         StringBuilder eventQueenNames = new StringBuilder();
         for (Map.Entry<String, String> entry : queens.entrySet()) {
             eventQueenNames.append(entry.getValue()).append(", ");
@@ -208,11 +219,11 @@ public class EditEventFragment extends Fragment {
                         }
 
                         String min = "";
-                        if (minutes < 10)
+                        if (minutes < 10) {
                             min = "0" + minutes;
-                        else
+                        } else {
                             min = String.valueOf(minutes);
-
+                        }
                         String aTime = new StringBuilder().append(hour).append(':')
                                 .append(min).append(" ").append(timeSet).toString();
 

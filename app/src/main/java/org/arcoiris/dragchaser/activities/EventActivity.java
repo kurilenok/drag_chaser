@@ -2,6 +2,7 @@ package org.arcoiris.dragchaser.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,13 +36,15 @@ public class EventActivity extends AppCompatActivity
     private String key;
     private String title;
     private ProgressDialog dialog;
-    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         ButterKnife.bind(this);
+
+        database = FirebaseDatabase.getInstance();
 
         dialog = new ProgressDialog(this);
         dialog.setTitle("Connecting..");
@@ -54,7 +57,7 @@ public class EventActivity extends AppCompatActivity
     }
 
     private void getEventByKey(String key) {
-        DatabaseReference eventsRef = db.getReference("events").child(key);
+        DatabaseReference eventsRef = database.getReference("events").child(key);
         eventsRef.addValueEventListener(new EventValueEventListner());
     }
 
@@ -102,6 +105,7 @@ public class EventActivity extends AppCompatActivity
     @OnClick(R.id.fabDelete)
     public void onFabDelete(View view) {
         Snackbar.make(view, "Delete " + title + "?", Snackbar.LENGTH_LONG)
+                .setActionTextColor(Color.YELLOW)
                 .setAction("yeap!", new onActionListner()).show();
     }
 
@@ -109,8 +113,14 @@ public class EventActivity extends AppCompatActivity
         @Override
         public void onClick(View view) {
             dialog.show();
-            DatabaseReference ref = db.getReference("events");
-            ref.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListener());
+
+            DatabaseReference refQueens = database.getReference("queens");
+            for (String queenKey : event.getEventQueens().keySet()) {
+                refQueens.child(queenKey).child("queenEvents").child(key).removeValue();
+            }
+
+            DatabaseReference refEvents = database.getReference("events");
+            refEvents.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListener());
         }
     }
 
@@ -122,5 +132,4 @@ public class EventActivity extends AppCompatActivity
             finish();
         }
     }
-
 }

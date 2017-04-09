@@ -2,6 +2,7 @@ package org.arcoiris.dragchaser.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -56,7 +57,7 @@ public class QueenActivity extends AppCompatActivity
 
     private void getQueenByKey(final String key) {
         DatabaseReference queensRef = db.getReference("queens").child(key);
-        queensRef.addValueEventListener(new QueenValueEventListner());
+        queensRef.addListenerForSingleValueEvent(new QueenValueEventListner());
     }
 
     private class QueenValueEventListner implements ValueEventListener {
@@ -105,6 +106,7 @@ public class QueenActivity extends AppCompatActivity
     @OnClick(R.id.fabDelete)
     public void onFabDelete(View view) {
         Snackbar.make(view, "Delete " + name + "?", Snackbar.LENGTH_LONG)
+                .setActionTextColor(Color.YELLOW)
                 .setAction("yeap!", new onActionListner()).show();
     }
 
@@ -112,8 +114,14 @@ public class QueenActivity extends AppCompatActivity
         @Override
         public void onClick(View view) {
             dialog.show();
-            DatabaseReference ref = db.getReference("queens");
-            ref.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListener());
+
+            DatabaseReference refEvents = db.getReference("events");
+            for (String eventKey : queen.getQueenEvents().keySet()) {
+                refEvents.child(eventKey).child("eventQueens").child(key);
+            }
+
+            DatabaseReference refQueens = db.getReference("queens");
+            refQueens.child(key).removeValue().addOnSuccessListener(new RemoveSuccessListener());
         }
     }
 

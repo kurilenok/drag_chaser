@@ -76,4 +76,14 @@ public class Event implements Comparable<Event> {
         return event;
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                .append(date)
+                .append("!@")
+                .append(title)
+                .append("!@")
+                .append(venue)
+                .toString();
+    }
 }

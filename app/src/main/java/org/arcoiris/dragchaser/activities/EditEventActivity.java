@@ -54,7 +54,7 @@ public class EditEventActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("Edit: " + event.getTitle());
                 EditEventFragment fragment = (EditEventFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.fragment_edit_event);
-                fragment.propagateEvent(event);
+                fragment.updateViewForExistingEvent(event);
             }
 
             @Override
