@@ -16,5 +16,9 @@
     <string name="title_activity_edit_event">EditEventActivity</string>
 
     <string name="spinner_prompt">Select Queens</string>
+    <string name="title_activity_bottom">BottomActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>

@@ -68,6 +68,7 @@ public class EventsListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        System.out.println("Attach");
         if (context instanceof OnEventClickListener) {
             listener = (OnEventClickListener) context;
         } else {
@@ -78,6 +79,7 @@ public class EventsListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        System.out.println("Detach");
         listener = null;
     }
 

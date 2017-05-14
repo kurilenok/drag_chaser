@@ -18,6 +18,7 @@ import org.arcoiris.dragchaser.models.Queen;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
     public QueensAdapter(OnQueenClickListener listener) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference queensRef = db.getReference("queens");
+
 
         queensRef.addChildEventListener(new ChildEventListener() {
             @Override

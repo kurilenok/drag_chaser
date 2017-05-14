@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_navigation_events"
+        android:icon="@drawable/events"
+        android:title="Events" />
+
+    <item
+        android:id="@+id/bottom_navigation_queens"
+        android:icon="@drawable/queens"
+        android:title="Queens" />
+
+    <item
+        android:id="@+id/bottom_navigation_venues"
+        android:icon="@drawable/venues"
+        android:title="Venues" />
+
+</menu>

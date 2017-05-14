@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_2);
         ButterKnife.bind(this);
 
         setupToolbar();
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -80,9 +81,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.END)) {
+            drawer.closeDrawer(GravityCompat.END);
         } else {
             super.onBackPressed();
         }
@@ -95,18 +96,32 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        drawer.openDrawer(Gravity.END);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (drawer.isDrawerOpen(Gravity.END)) {
+                    drawer.closeDrawer(Gravity.END);
+                } else {
+                    drawer.openDrawer(GravityCompat.END);
+                }
+                return true;
+            case R.id.action_settings:
+                drawer.openDrawer(GravityCompat.END);
+                return true;
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle bottom_navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
@@ -124,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawer.closeDrawer(GravityCompat.END);
         return true;
     }
 
@@ -149,16 +164,20 @@ public class MainActivity extends AppCompatActivity
 
     @OnClick(R.id.fab)
     public void onFabClick(View view) {
+        Intent intent;
         switch (viewPager.getCurrentItem()) {
             case 0:
-                Intent intent0 = new Intent(MainActivity.this, EditEventActivity.class);
-                startActivityForResult(intent0, 0);
+                intent = new Intent(MainActivity.this, EditEventActivity.class);
+                startActivityForResult(intent, 0);
                 break;
             case 1:
-                Intent intent1 = new Intent(MainActivity.this, EditQueenActivity.class);
-                startActivityForResult(intent1, 1);
+                intent = new Intent(MainActivity.this, EditQueenActivity.class);
+                startActivityForResult(intent, 1);
                 break;
-
+            case 2:
+                intent = new Intent(MainActivity.this, BottomActivity.class);
+                startActivityForResult(intent, 2);
+                break;
         }
     }
 }
