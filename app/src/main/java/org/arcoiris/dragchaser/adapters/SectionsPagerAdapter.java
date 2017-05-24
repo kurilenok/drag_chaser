@@ -11,6 +11,7 @@ import org.arcoiris.dragchaser.fragments.QueensListFragment;
  * Created by kukolka on 3/25/2017.
  */
 
+@Deprecated
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     public SectionsPagerAdapter(FragmentManager fm) {

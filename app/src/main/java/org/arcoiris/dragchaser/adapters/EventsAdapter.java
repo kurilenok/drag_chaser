@@ -93,7 +93,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Event event = events.get(position);
-        holder.tvDate.setText(event.getDate());
+
+        String[] dateArray = event.getDate().split("/");
+
+        holder.tvMonth.setText(resolveMonth(dateArray[0]));
+        holder.tvDate.setText(dateArray[1]);
         holder.tvTitle.setText(event.getTitle());
 
         Map<String, String> eventQueens = event.getEventQueens();
@@ -116,6 +120,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         });
     }
 
+    private String resolveMonth(String s) {
+        String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
+        return months[Integer.parseInt(s)-1];
+    }
+
     @Override
     public int getItemCount() {
         return events.size();
@@ -125,6 +134,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
         @BindView(R.id.tvDate)
         TextView tvDate;
+
+        @BindView(R.id.tvMonth)
+        TextView tvMonth;
 
         @BindView(R.id.tvTitle)
         TextView tvTitle;

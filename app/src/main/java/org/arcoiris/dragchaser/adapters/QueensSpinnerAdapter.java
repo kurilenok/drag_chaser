@@ -18,6 +18,7 @@ import java.util.List;
  * Created by kukolka on 4/1/2017.
  */
 
+@Deprecated
 public class QueensSpinnerAdapter extends ArrayAdapter<Queen> {
 
     private Context context;
