@@ -34,7 +34,6 @@ public class QueensAdapter extends RecyclerView.Adapter<QueensAdapter.ViewHolder
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference queensRef = db.getReference("queens");
 
-
         queensRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
