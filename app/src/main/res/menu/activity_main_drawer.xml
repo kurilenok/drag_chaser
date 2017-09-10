@@ -35,13 +35,17 @@
                 android:icon="@drawable/queen"
                 android:title="Ekaterina Sergeeva" />
             <item
+                android:id="@+id/nav_send8"
+                android:icon="@drawable/venues"
+                android:title="Rasputin" />
+            <item
                 android:id="@+id/nav_send3"
                 android:icon="@drawable/events"
                 android:title="Drag Show" />
             <item
                 android:id="@+id/nav_send4"
                 android:icon="@drawable/venues"
-                android:title="Stolovaya" />
+                android:title="Primorski" />
         </menu>
     </item>
 
